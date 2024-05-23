@@ -13,8 +13,6 @@ server = socket.socket(socket.AF_INET , socket.SOCK_STREAM)
 server.bind((HOST_IP , HOST_PORT))
 server.listen()
 
-
-
 clients = []
 nicknames = []
 db = []
@@ -32,7 +30,7 @@ def valid(client):
   flag = False
   while True:
     try:
-      message = client.recv(BYTESIZE).decode(ENCODER)
+      message = client.recv(BYTESIZE).decode(ENCODER).strip()
       newmessage = message.split(":")
       info = (newmessage[0] , newmessage[1])
       if (info in db)and newmessage[0] not in nicknames:
