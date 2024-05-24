@@ -2,7 +2,7 @@ import os
 import socket
 import threading
 from ttkbootstrap import *
-from ttkbootstrap.dialogs import Messagebox
+from ttkbootstrap.dialogs import Messagebox 
 from PIL import ImageTk , Image
 from pygame import mixer
 from setting import Setting
@@ -24,7 +24,11 @@ class GuiApp(Setting):
     if condition == 'login':
       self.login()
 
-    self.frame.pack(expand=1 , fill='both')
+    try:
+      self.frame.pack(expand=1 , fill='both')
+    except:
+      os._exit(1)
+
   def login(self):
     # ==== Connect to The Server ====
     try:
@@ -142,12 +146,19 @@ class GuiApp(Setting):
     alert_message = f'{GuiApp._username}:joined the chat'
     GuiApp._client.send(alert_message.encode(self.ENCODER))
     while True:
-      if int(self.chat_layout.verticalscorlbar.get()[1]) >= 0.7 :
+      try:
+        message = GuiApp._client.recv(self.BYTESIZE).decode(self.ENCODER)
+        newmessage = message.split(":")
+        if newmessage[0] != GuiApp._username:
+          self.chat_layout.ltext(message)
+        if int(self.chat_layout.verticalscorlbar.get()[1]) >= 0.8 :
+          self.chat_layout.moveto_end_of_chat()
+      except:
+        message = 'error:Cant Handel Unicode'
+        self.chat_layout.rtext(message)
         self.chat_layout.moveto_end_of_chat()
-      message = GuiApp._client.recv(self.BYTESIZE).decode(self.ENCODER)
-      newmessage = message.split(":")
-      if newmessage[0] != GuiApp._username:
-        self.chat_layout.ltext([newmessage[0],newmessage[1]])
+
+
 
 class Chatapp(GuiApp):
   def __init__(self,condition,root):
@@ -266,8 +277,9 @@ class Chatapp(GuiApp):
     self.update()
     
   def ltext(self,message):
-    self.lblframe = LabelFrame(self.ftable,style='info.TLabelframe' ,text=f'{message[0]}',borderwidth=10 , relief='solid')
-    Label(self.lblframe , text=message[1],font='15' ,background='#000',padding=(5) ,anchor='center').grid()
+    newmessage = message.split(":")
+    self.lblframe = LabelFrame(self.ftable,style='info.TLabelframe' ,text=newmessage[0],borderwidth=10 , relief='solid')
+    Label(self.lblframe , text=newmessage[1],font='15' ,background='#000',padding=(5) ,anchor='center').grid()
     self.lblframe.grid(column=0,pady=5,padx=5,sticky='w')
     self.music.notif_sound('recieve')
     self.update()
@@ -277,11 +289,15 @@ class Chatapp(GuiApp):
 
 
   def write_usingkey(self,event):
-      message = self.Text_box.get("1.0",'end-2c')
-      self.Text_box.delete("1.0",END)
-      GuiApp._client.send(f'{GuiApp._username}:{message}'.encode(self.ENCODER))
-      self.rtext(message=message)
-      self.moveto_end_of_chat()
+      try:
+        message = self.Text_box.get("1.0",'end-2c')
+        self.Text_box.delete("1.0",END)
+        GuiApp._client.send(f'{GuiApp._username}:{message}'.encode(self.ENCODER))
+        self.rtext(message=message)
+        self.moveto_end_of_chat()
+      except:
+        message = 'error:cant Handel Unicode'
+        GuiApp._client.send(message.encode(self.ENCODER))
       
 
   def write_usingbtn(self):

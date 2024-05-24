@@ -1,5 +1,5 @@
 import socket
-
+# unix.cloud9p.org
 class Setting:
   def __init__(self) -> None:
     #chat config

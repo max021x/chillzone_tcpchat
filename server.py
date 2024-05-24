@@ -25,7 +25,7 @@ def brodcast(message):
     client.send(message)
 
 
-
+  
 def valid(client):
   flag = False
   while True:
