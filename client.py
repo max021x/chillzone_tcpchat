@@ -94,8 +94,8 @@ class GuiApp(Setting):
         message = GuiApp._client.recv(self.BYTESIZE).decode(self.ENCODER)
         if message == 'info':
           print(message)
-          GuiApp._username = 'karim'
-          GuiApp._password = 'bmw'
+          GuiApp._username = 'saeed'
+          GuiApp._password = 'loopc'
           GuiApp._client.send(f"{GuiApp._username}:{GuiApp._password}".encode(self.ENCODER))
         elif message == 'enter':
           break
