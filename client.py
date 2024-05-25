@@ -39,47 +39,6 @@ class GuiApp(Setting):
       Messagebox.show_error('Wrong Host_ip or Port')
       Server_Config(self.root)
       return
-    self.frame.pack_forget()
-    # ==== Main Frame ====
-    self.frame = Frame(self.root)
-    self.container_frame = Frame(self.frame)
-    self.container_frame.columnconfigure((0,1,2,3,4,5,6,7,8,9,10,11,12,13,14) ,weight=1 , uniform='a')
-    self.container_frame.rowconfigure((0,1,2,3,4,5,6,7,8,9,10), weight=1,uniform='a')
-    
-    # ==== Login Image and Image Canvas =====
-    self.signin_image = ImageTk.PhotoImage(Image.open(r'images\login.png'))
-    self.image_canvas = Canvas(self.container_frame)
-    self.image_canvas.create_image(-50,-50,image =self.signin_image ,anchor = 'nw')
-    self.image_canvas.grid(row= 0 ,column=0 ,rowspan=10,columnspan=9,sticky='nswe')
-  
-    # ==== Login Label ==== 
-    self.Login_lbl = Label(self.container_frame , text='Login' ,background='#45e6bb',anchor='w',padding=(30,20),foreground='white',font='arila 20')
-    self.Login_lbl.grid(row=1 ,column=10, sticky='ewn' ,columnspan=4)
-    
-    # ==== User Entry ====
-    self.username_entry = Entry(self.container_frame ,font='aril 20',foreground='#a8a7a7')
-    self.username_entry.insert(0,'Enter Username')
-    self.username_entry.grid(row=2,column=10,sticky='ew',columnspan=4)
-    
-    # ==== Password Entry ====
-    self.password_entry = Entry(self.container_frame,font='aril 20',foreground='#a8a7a7')
-    self.password_entry.insert(0,'Enter Password')
-    self.password_entry.grid(row=3,column=10,sticky='ewn',columnspan=4)
-    
-    # ===== Login Button Style =====
-    self.btn_style = Style()
-    self.btn_style.configure('info.Outline.TButton',font=("arila",20),anchor='center')
-    self.var = tk.IntVar()
-    self.login_btn = Button(self.container_frame ,style='info.Outline.TButton', text='Login',command = lambda : self.var.set(1))
-    self.login_btn.configure(padding=(20,20))
-    self.login_btn.grid(row=4,column=10,sticky='ewn',columnspan=4)   
-    
-    #  ===== Place-Holder event =====
-    self.username_entry.bind('<Button-1>',self.username_clicked)
-    self.username_entry.bind("<Leave>",self.username_leave)
-    self.password_entry.bind("<Button-1>",self.password_clicked)
-    self.password_entry.bind("<Leave>",self.password_leave)
-    self.container_frame.pack(expand=1 , fill='both')
     self.root.bind('<Destroy>',self.disconnected)
 
     # ====== login thread =====
@@ -135,9 +94,8 @@ class GuiApp(Setting):
         message = GuiApp._client.recv(self.BYTESIZE).decode(self.ENCODER)
         if message == 'info':
           print(message)
-          self.login_btn.wait_variable(self.var)
-          GuiApp._username = self.username_entry.get()
-          GuiApp._password = self.password_entry.get()
+          GuiApp._username = 'karim'
+          GuiApp._password = 'bmw'
           GuiApp._client.send(f"{GuiApp._username}:{GuiApp._password}".encode(self.ENCODER))
         elif message == 'enter':
           break
@@ -169,25 +127,7 @@ class Chatapp(GuiApp):
     self.frame.columnconfigure((0,1,2,3,4,5,6) , uniform='a' , weight=1)
     self.frame.rowconfigure((0,1,2,3,4,5,6,7,8,9,10) , uniform='a' , weight=1)
     self.frame.pack(expand=True , fill='both')
-    
-
-
-    # ===== Gif Style =====
-    self.gifs = r'images\galaxy.gif'
-    self.openimage = Image.open(self.gifs) 
-    self.frames = self.openimage.n_frames
-    self.imageobject = [PhotoImage(file=self.gifs,format=f'gif -index {i}') for i in range(self.frames)]    
-    self.count = 0
-    self.showanimation = None
-    self.animated_gif_1 = Label(self.frame , image='')
-    self.animated_gif_1.grid(row=0 ,column=0 ,rowspan=4)
-    self.animated_gif_2 = Label(self.frame , image='')
-    self.animated_gif_2.grid(row=3 ,column=0 ,rowspan=5)
-    self.animated_gif_3 = Label(self.frame , image='')
-    self.animated_gif_3.grid(row=7 ,column=0 ,rowspan=5)
-
-
-    self.animation()
+  
 
     # ====== Chat canvas ======
     self.chat = LabelFrame(self.frame,style='primary.TLabelFrame' , borderwidth=20 ,relief='solid')
@@ -229,20 +169,6 @@ class Chatapp(GuiApp):
     self.root.bind('<Shift-Return>',self.shift_enter_pressed)
     self.root.bind('<F1>', lambda x : self.canvas.yview_moveto('1.0'))
     self.root.bind('<Destroy>',self.disconnected)
-
-
-  def animation(self):
-    self.newimg = self.imageobject[self.count]
-    self.animated_gif_1.configure(image=self.newimg)
-    self.animated_gif_2.configure(image=self.newimg)
-    self.animated_gif_3.configure(image=self.newimg)
-    self.count+=1
-
-    if  self.count == self.frames:
-        self.count = 0
-
-    self.showanimation = self.root.after(90 , lambda: self.animation())
-
 
 
   def mute_btn(self, button):
