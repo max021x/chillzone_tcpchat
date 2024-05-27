@@ -193,7 +193,7 @@ class Chatapp(GuiApp):
     self.chat = LabelFrame(self.frame,style='primary.TLabelFrame' , borderwidth=20 ,relief='solid')
     self.chat.columnconfigure((0,1,2,3),weight=1 , uniform='a')
     self.chat.rowconfigure((0,1,2,3,4,5,6,7,8,9,10) , weight=1, uniform='a')
-    self.canvas = Canvas(self.chat , background='red')
+    self.canvas = Text(self.chat , font='arial 20' , undo=True)
     self.ftable = Frame(self.canvas)
     self.ftable.columnconfigure((0,1),weight=1 , uniform='a')
     self.verticalscorlbar = Scrollbar(self.frame)
@@ -221,20 +221,14 @@ class Chatapp(GuiApp):
     self.mute_button.grid(row=10,column=1,sticky='nswe')
     
     # ==== Mouse-Wheel event and Updating Canvas width ===
-    self.canvas.bind('<Configure>' , self.width)
-    self.canvas.bind_all('<MouseWheel>',lambda event :self.canvas.yview_scroll(-int(event.delta/60),"units"))
+    # self.canvas.bind('<Configure>' , self.width)
+    # self.canvas.bind_all('<MouseWheel>',lambda event :self.canvas.yview_scroll(-int(event.delta/60),"units"))
     
     # ==== Key events ===== 
     self.root.bind('<Return>',self.write_usingkey)
     self.root.bind('<Shift-Return>',self.shift_enter_pressed)
     self.root.bind('<F1>', lambda x : self.canvas.yview_moveto('1.0'))
     self.root.bind('<Destroy>',self.disconnected)
-
-  def users_id(self , id):
-    self.users_lblframe = Frame(self.users_tabel)
-    Label(self.users_lblframe , text=id, style='primary.Inverse.TLabel' ,padding=(10),width=30).pack(pady=5,expand=1 ,fill='both')
-    self.users_lblframe.grid(column=0,sticky='nswe')
-    self.update()
 
 
   def animation(self):
@@ -270,19 +264,12 @@ class Chatapp(GuiApp):
     self.canvas.create_window(0,0,window=self.ftable , width=cc_width, anchor=tk.NW)
   
   def rtext(self ,message):
-    self.lblframe = LabelFrame(self.ftable,style='info.TLabelframe' ,text=f'{GuiApp._username}',borderwidth=10 , relief='solid')
-    Label(self.lblframe , text=message,font='15' ,background='#000',padding=(5) ,anchor='center').grid()
-    self.lblframe.grid(column=1,pady=5,padx=5,sticky='e')
-    self.music.notif_sound('send')
-    self.update()
+    self.canvas.insert(END , message+"\n")
+    # self.update()
     
   def ltext(self,message):
-    newmessage = message.split(":")
-    self.lblframe = LabelFrame(self.ftable,style='info.TLabelframe' ,text=newmessage[0],borderwidth=10 , relief='solid')
-    Label(self.lblframe , text=newmessage[1],font='15' ,background='#000',padding=(5) ,anchor='center').grid()
-    self.lblframe.grid(column=0,pady=5,padx=5,sticky='w')
-    self.music.notif_sound('recieve')
-    self.update()
+    self.canvas.insert(END, message+"\n")
+    # self.update()
 
   def moveto_end_of_chat(self):
       self.canvas.yview_moveto('1.0')
@@ -307,9 +294,9 @@ class Chatapp(GuiApp):
     self.rtext(message=message)
     self.moveto_end_of_chat()
 
-  def update(self):
-    self.canvas.update_idletasks()
-    self.canvas.config(scrollregion=self.ftable.bbox('all'))
+  # def update(self):
+  #   self.canvas.update_idletasks()
+  #   self.canvas.config(scrollregion=self.ftable.bbox('all'))
 
 
 class MusicPlayer:
