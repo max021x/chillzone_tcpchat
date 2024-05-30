@@ -48,8 +48,11 @@ def valid(client):
       client.close()
       break
   
-  for messages in all_messages:
-    client.send(messages+"\n".encode(ENCODER))
+  if flag:
+    for messages in all_messages:
+      for client in clients:
+        client.send(messages+'\n'.encode(ENCODER))
+
 
   while flag: 
       try :
@@ -62,7 +65,7 @@ def valid(client):
         client.close()
         nickname = nicknames[index]
         nicknames.remove(nickname)
-        break
+        flag = False
 
 
 
