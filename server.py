@@ -57,6 +57,7 @@ def valid(client):
         client.close()
         nickname = nicknames[index]
         nicknames.remove(nickname)
+        brodcast(f'{nickname}:left the chat'.encode(ENCODER))
         break
 
 
