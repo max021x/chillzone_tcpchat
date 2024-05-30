@@ -16,6 +16,7 @@ server.listen()
 clients = []
 nicknames = []
 db = []
+all_messages = []
 
 for row in cur.execute('SELECT Username , Password from chillzone'):
   db.append(row)
@@ -46,10 +47,14 @@ def valid(client):
     except:
       client.close()
       break
-   
+  
+  for messages in all_messages:
+    client.send(messages+"\n".encode(ENCODER))
+
   while flag: 
       try :
         message  = client.recv(BYTESIZE)
+        all_messages.append(message)
         brodcast(message)
       except:
         index = clients.index(client)
