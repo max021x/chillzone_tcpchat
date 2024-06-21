@@ -6,9 +6,9 @@ class Setting:
     self.ENCODER = "utf-8"
     self.BYTESIZE = 1024
     # UI
-    self.sc_width = '1400'
-    self.sc_hieght = '900'
-    self.theme = 'darkly'
+    self.sc_width = '1000'
+    self.sc_hieght = '700'
+    self.theme = 'vapor'
     #events
     self.shift_enter = False
 
